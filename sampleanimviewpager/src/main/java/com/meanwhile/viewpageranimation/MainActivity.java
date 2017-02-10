@@ -1,8 +1,8 @@
 package com.meanwhile.viewpageranimation;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mPager = (AnimViewPager) findViewById(R.id.pager);
-        mAdapter = new MyAdapter(getSupportFragmentManager());
+        mAdapter = new MyAdapter(getFragmentManager());
         mPager.setAdapter(mAdapter);
         int pageMargin = getResources().getDimensionPixelOffset(R.dimen.journey_card_margin);
         mPager.setClipToPadding(false);
