@@ -1,4 +1,4 @@
-package com.meanwhile.viewpageranimation;
+package com.meanwhile.animviewpager;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -9,10 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +19,7 @@ import java.util.List;
  * Created by mengujua on 10/2/17.
  */
 
-public class AnimViewPager extends ViewPager {
+public class AnimViewPager<T> extends ViewPager {
 
     private static final String TAG = "AnimViewPager";
     private static final float ENTER_DISTANCE = -1600;
@@ -45,7 +42,7 @@ public class AnimViewPager extends ViewPager {
         }
     }
 
-    public void replaceFragment(final int position, final MainActivity.Item...items) {
+    public void replaceFragment(final int position, final T...items) {
         AnimatorSet removeAnim = new AnimatorSet();
         View v = ((AnimViewPagerAdapter) getAdapter()).getRegisteredFragment(position).getView();
 
@@ -135,7 +132,7 @@ public class AnimViewPager extends ViewPager {
             }});
     }
 
-    private void doAddItems(int position, MainActivity.Item...items) {
+    private void doAddItems(int position, T...items) {
         final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
         final HashMap<Integer, Integer> leftValueMap = getInitialPositionMap(firstPos);
 

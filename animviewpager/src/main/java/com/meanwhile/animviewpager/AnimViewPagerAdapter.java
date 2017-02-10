@@ -1,8 +1,9 @@
-package com.meanwhile.viewpageranimation;
+package com.meanwhile.animviewpager;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -86,7 +87,7 @@ public abstract class AnimViewPagerAdapter<T> extends FragmentStatePagerAdapter 
 
     @Override
     public int getItemPosition(Object object) {
-        return POSITION_NONE;
+        return PagerAdapter.POSITION_NONE;
     }
 
     @Override

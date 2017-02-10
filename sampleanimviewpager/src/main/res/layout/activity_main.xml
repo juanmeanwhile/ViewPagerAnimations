@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.meanwhile.viewpageranimation.MainActivity">
 
-    <com.meanwhile.viewpageranimation.AnimViewPager
+    <com.meanwhile.animviewpager.AnimViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
