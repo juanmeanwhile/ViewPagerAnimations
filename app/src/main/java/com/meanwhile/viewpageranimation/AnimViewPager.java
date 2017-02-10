@@ -154,9 +154,11 @@ public class AnimViewPager extends ViewPager {
                     int visiblePosInView = sortedPositions.get(i);
                     View child = getChildAt(visiblePosInView);
                     int itemId = ((AnimViewPagerAdapter) getAdapter()).getItemId(firstPos + i);
-
                     Integer startPos = leftValueMap.get(itemId);
                     int currentPos = child.getLeft();
+
+                    Log.d(TAG, "Anim id: " + itemId + " from: " + startPos + " to: " + currentPos);
+
                     if (startPos == null) {
                         count++;
                         AnimatorSet add = new AnimatorSet();
@@ -193,7 +195,7 @@ public class AnimViewPager extends ViewPager {
             int visiblePosInView = sortedPositions.get(i);
             View child = getChildAt(visiblePosInView);
             int itemId = ((AnimViewPagerAdapter) getAdapter()).getItemId(firstPos + visiblePosInView);
-            map.put(itemId, child.getLeft() - ((AnimViewPagerAdapter) getAdapter()).getCount() > 1? getScrollX():0);
+            map.put(itemId, child.getLeft() - (((AnimViewPagerAdapter) getAdapter()).getCount() > 1? getScrollX():0));
         }
 
         return map;
