@@ -19,7 +19,7 @@ import java.util.List;
  * Created by mengujua on 10/2/17.
  */
 
-public class AnimViewPager<T> extends ViewPager {
+public class AnimViewPager<T,I> extends ViewPager {
 
     private static final String TAG = "AnimViewPager";
     private static final float ENTER_DISTANCE = -1600;
@@ -106,7 +106,7 @@ public class AnimViewPager<T> extends ViewPager {
 
     private void doRemove(int position) {
         final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
-        final HashMap<Integer, Integer> leftValueMap = getInitialPositionMap(firstPos);
+        final HashMap<I, Integer> leftValueMap = getInitialPositionMap(firstPos);
 
         ((AnimViewPagerAdapter) getAdapter()).removeItem(position);
 
@@ -120,7 +120,7 @@ public class AnimViewPager<T> extends ViewPager {
                 for (int i = 0; i < getChildCount() ; i++){
                     int visiblePosInView = sortedPositions.get(i);
                     View child = getChildAt(visiblePosInView);
-                    int itemId = ((AnimViewPagerAdapter) getAdapter()).getItemId(firstPos + i);
+                    I itemId = ((AnimViewPagerAdapter<T,I>) getAdapter()).getItemId(firstPos + i);
 
                     Integer startPos = leftValueMap.get(itemId);
                     int currentPos = child.getLeft();
@@ -134,7 +134,7 @@ public class AnimViewPager<T> extends ViewPager {
 
     private void doAddItems(int position, T...items) {
         final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
-        final HashMap<Integer, Integer> leftValueMap = getInitialPositionMap(firstPos);
+        final HashMap<I, Integer> leftValueMap = getInitialPositionMap(firstPos);
 
         ((AnimViewPagerAdapter) getAdapter()).replaceItems(position, items);
 
@@ -150,7 +150,7 @@ public class AnimViewPager<T> extends ViewPager {
                 for (int i = 0; i < getChildCount() ; i++){
                     int visiblePosInView = sortedPositions.get(i);
                     View child = getChildAt(visiblePosInView);
-                    int itemId = ((AnimViewPagerAdapter) getAdapter()).getItemId(firstPos + i);
+                    I itemId = ((AnimViewPagerAdapter<T,I>) getAdapter()).getItemId(firstPos + i);
                     Integer startPos = leftValueMap.get(itemId);
                     int currentPos = child.getLeft();
 
@@ -182,8 +182,8 @@ public class AnimViewPager<T> extends ViewPager {
             }});
     }
 
-    private HashMap<Integer, Integer> getInitialPositionMap(int firstPos){
-        final HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+    private HashMap<I, Integer> getInitialPositionMap(int firstPos){
+        final HashMap<I, Integer> map = new HashMap<I, Integer>();
 
         ArrayList<Integer> sortedPositions = sortViewByLeft();
 
@@ -191,8 +191,9 @@ public class AnimViewPager<T> extends ViewPager {
         for (int i = 0; i < getChildCount() ; i++){
             int visiblePosInView = sortedPositions.get(i);
             View child = getChildAt(visiblePosInView);
-            int itemId = ((AnimViewPagerAdapter) getAdapter()).getItemId(firstPos + visiblePosInView);
-            map.put(itemId, child.getLeft() - (((AnimViewPagerAdapter) getAdapter()).getCount() > 1? getScrollX():0));
+            AnimViewPagerAdapter<T,I> adapter = (AnimViewPagerAdapter<T,I>) getAdapter();
+            I itemId = adapter.getItemId(firstPos + visiblePosInView);
+            map.put(itemId, child.getLeft() - (adapter.getCount() > 1? getScrollX():0));
         }
 
         return map;
