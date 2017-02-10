@@ -14,7 +14,7 @@ And this to your project build.gradle:
 
 
 And this to your app's build.gradle:
-	```java
+```java
   dependencies {
 	        compile 'com.github.juanmeanwhile:ViewPagerAnimations:0.1.0'
 	}
