@@ -17,9 +17,9 @@ import java.util.List;
  * Created by mengujua on 10/2/17.
  */
 
-public abstract class AnimViewPagerAdapter<T> extends FragmentStatePagerAdapter {
+public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapter {
 
-    private HashMap<T, Integer> mIdMap;
+    private HashMap<T, I> mIdMap;
     private SparseArray<WeakReference<Fragment>> registeredFragments;
     private List<T> mData;
 
@@ -27,11 +27,11 @@ public abstract class AnimViewPagerAdapter<T> extends FragmentStatePagerAdapter 
         super(fm);
 
         mData = new ArrayList<T>();
-        mIdMap = new HashMap<T, Integer>();
+        mIdMap = new HashMap<T, I>();
         registeredFragments = new SparseArray<WeakReference<Fragment>>();
     }
 
-    public abstract int getIdForObject(T item);
+    public abstract I getIdForObject(T item);
 
     protected abstract Fragment getFragmentForItem(T t);
 
@@ -63,7 +63,7 @@ public abstract class AnimViewPagerAdapter<T> extends FragmentStatePagerAdapter 
         notifyDataSetChanged();
     }
 
-    public Integer getItemId(int position){
+    public I getItemId(int position){
         return mIdMap.get(mData.get(position));
     }
 

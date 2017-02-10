@@ -55,14 +55,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public class MyAdapter extends AnimViewPagerAdapter<Item> {
+    public class MyAdapter extends AnimViewPagerAdapter<Item, Integer> {
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
-        public int getIdForObject(Item item) {
+        public Integer getIdForObject(Item item) {
             return item.id;
         }
 
