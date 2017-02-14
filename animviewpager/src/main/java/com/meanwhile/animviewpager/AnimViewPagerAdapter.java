@@ -45,7 +45,26 @@ public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapte
         notifyDataSetChanged();
     }
 
-    public void replaceItems(int position, T... items) {
+    public void delete(int fromInc, int toExc) {
+        for (int i = 0;  i < fromInc - toExc ; i++) {
+            T item = mData.remove(fromInc);
+            mIdMap.remove(item);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void replaceAndDeleteBefore(int deleteFromPos, int replacePos, T replacingItem) {
+        for (int i = 0;  i < replacePos - deleteFromPos ; i++) {
+           T item = mData.remove(deleteFromPos);
+            mIdMap.remove(item);
+        }
+
+        mData.add(deleteFromPos, replacingItem);
+        mIdMap.put(replacingItem, getIdForObject(replacingItem));
+        notifyDataSetChanged();
+    }
+
+    public void replaceAndAddAfter(int position, T... items) {
         T removed = mData.remove(position);
         mData.addAll(position, Arrays.asList(items));
 

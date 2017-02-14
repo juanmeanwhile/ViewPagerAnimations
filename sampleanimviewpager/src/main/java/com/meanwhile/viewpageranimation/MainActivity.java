@@ -13,6 +13,7 @@ import com.meanwhile.animviewpager.AnimViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,32 +38,33 @@ public class MainActivity extends AppCompatActivity {
         mPager.setOffscreenPageLimit(3);
 
         ArrayList<Item> list = new ArrayList<Item>();
-        list.addAll(Arrays.asList(new Item(1, Color.BLUE), new Item(2, Color.RED), new Item(3, Color.YELLOW), new Item(4, Color.GREEN)));
+        list.addAll(Arrays.asList(new Item(1, Color.BLUE), new Item(2, Color.RED), new Item(3, Color.YELLOW), new Item(4, Color.GREEN), new Item(5, Color.CYAN)));
         mAdapter.setData(list);
 
         mButton = (Button) findViewById(R.id.button);
         mButton.setOnClickListener(new View.OnClickListener() {
-            int count = 0;
+            int count = 100;
             int[] colors = new int[]{Color.DKGRAY, Color.LTGRAY, Color.CYAN};
             @Override
             public void onClick(View v) {
                 //replaceFragment(Color.CYAN, mPager.getCurrentItem());
 
-                mPager.replaceFragment(1, new Item(5, Color.DKGRAY), new Item(6, Color.LTGRAY));
+                //mPager.replaceAndAddAfter(1, new Item(5, Color.DKGRAY), new Item(6, Color.LTGRAY));
                 //removeFragment(mPager.getCurrentItem());
+                mPager.replaceAndDeleteBefore(3, 2, 2, new Item(count, Color.DKGRAY));
                 count++;
             }
         });
     }
 
-    public class MyAdapter extends AnimViewPagerAdapter<Item, Integer> {
+    public class MyAdapter extends AnimViewPagerAdapter<Item, String> {
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
-        public Integer getIdForObject(Item item) {
+        public String getIdForObject(Item item) {
             return item.id;
         }
 
@@ -73,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class Item {
-        int id;
+        String id;
         int color;
         public Item(int id, int color) {
-            this.id = id;
+            this.id = ""+id;
             this.color = color;
         }
 

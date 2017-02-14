@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,14 +43,49 @@ public class AnimViewPager<T,I> extends ViewPager {
         }
     }
 
-    public void replaceFragment(final int position, final T...items) {
-        AnimatorSet removeAnim = new AnimatorSet();
-        View v = ((AnimViewPagerAdapter) getAdapter()).getRegisteredFragment(position).getView();
 
-        removeAnim.playTogether(ObjectAnimator.ofFloat(v, View.ALPHA, 1, 0 ),
-                                ObjectAnimator.ofFloat(v, View.TRANSLATION_Y, 0, -ENTER_DISTANCE),
-                                ObjectAnimator.ofFloat(v, View.SCALE_X, 1, 0.9f),
-                                ObjectAnimator.ofFloat(v, View.SCALE_Y, 1, 0.9f));
+    public void replaceAndDeleteBefore(final int replacePosition, final int deleteItems, int animDeleted, final T item) {
+        List<Animator> anims = new ArrayList<Animator>();
+        for (int i = replacePosition - animDeleted; i < replacePosition; i++) {
+            View v = ((AnimViewPagerAdapter) getAdapter()).getRegisteredFragment(i).getView();
+            anims.add(buildHideAnim(v));
+        }
+        AnimatorSet set = new AnimatorSet();
+        set.playSequentially(anims);
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setCurrentItem(replacePosition-deleteItems, true);
+                final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
+                final HashMap<I, Integer> leftValueMap = getInitialPositionMap(firstPos);
+
+                ((AnimViewPagerAdapter) getAdapter()).replaceAndDeleteBefore(replacePosition-deleteItems, replacePosition, item);
+                setupSecondStepAnimations(firstPos, leftValueMap);
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        set.start();
+    }
+
+    public void replaceAndAddAfter(final int position, final T...items) {
+        Animator removeAnim;
+        View v = ((AnimViewPagerAdapter) getAdapter()).getRegisteredFragment(position).getView();
+        removeAnim = buildHideAnim(v);
         removeAnim.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -58,7 +94,11 @@ public class AnimViewPager<T,I> extends ViewPager {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                doAddItems(position, items);
+                final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
+                final HashMap<I, Integer> leftValueMap = getInitialPositionMap(firstPos);
+
+                ((AnimViewPagerAdapter) getAdapter()).replaceAndAddAfter(position, items);
+                setupSecondStepAnimations(firstPos, leftValueMap);
             }
 
             @Override
@@ -132,12 +172,8 @@ public class AnimViewPager<T,I> extends ViewPager {
             }});
     }
 
-    private void doAddItems(int position, T...items) {
-        final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
-        final HashMap<I, Integer> leftValueMap = getInitialPositionMap(firstPos);
 
-        ((AnimViewPagerAdapter) getAdapter()).replaceItems(position, items);
-
+    private void setupSecondStepAnimations(final int firstPos, final HashMap<I, Integer> leftValueMap) {
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -158,16 +194,10 @@ public class AnimViewPager<T,I> extends ViewPager {
 
                     if (startPos == null) {
                         count++;
-                        AnimatorSet add = new AnimatorSet();
-                        add.playTogether(ObjectAnimator.ofFloat(child, View.TRANSLATION_Y, ENTER_DISTANCE, 0),
-                                         ObjectAnimator.ofFloat(child, View.ALPHA, 0, 1),
-                                         ObjectAnimator.ofFloat(child, View.SCALE_X, 1.1f, 1f),
-                                         ObjectAnimator.ofFloat(child, View.SCALE_Y, 1.1f, 1f));
-
                         Animator trick = ObjectAnimator.ofFloat(child, View.ALPHA, 0, 0);
                         trick.setDuration(300 + (100 *count));
                         AnimatorSet set = new AnimatorSet();
-                        set.playSequentially(trick, add);
+                        set.playSequentially(trick, buildAddAnim(child));
                         anims.add(set);
 
                     }else if (startPos != currentPos) {
@@ -181,6 +211,26 @@ public class AnimViewPager<T,I> extends ViewPager {
                 return false;
             }});
     }
+
+    private Animator buildHideAnim(View v) {
+        AnimatorSet removeAnim = new AnimatorSet();
+        removeAnim.playTogether(ObjectAnimator.ofFloat(v, View.ALPHA, 1, 0 ),
+                                ObjectAnimator.ofFloat(v, View.TRANSLATION_Y, 0, -ENTER_DISTANCE),
+                                ObjectAnimator.ofFloat(v, View.SCALE_X, 1, 0.9f),
+                                ObjectAnimator.ofFloat(v, View.SCALE_Y, 1, 0.9f));
+
+        return removeAnim;
+    }
+
+    private Animator buildAddAnim(View v) {
+        AnimatorSet add = new AnimatorSet();
+        add.playTogether(ObjectAnimator.ofFloat(v, View.TRANSLATION_Y, ENTER_DISTANCE, 0),
+                         ObjectAnimator.ofFloat(v, View.ALPHA, 0, 1),
+                         ObjectAnimator.ofFloat(v, View.SCALE_X, 1.1f, 1f),
+                         ObjectAnimator.ofFloat(v, View.SCALE_Y, 1.1f, 1f));
+        return add;
+    }
+
 
     private HashMap<I, Integer> getInitialPositionMap(int firstPos){
         final HashMap<I, Integer> map = new HashMap<I, Integer>();
