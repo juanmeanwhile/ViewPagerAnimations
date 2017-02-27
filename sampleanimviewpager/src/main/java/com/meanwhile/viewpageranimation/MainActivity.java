@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         mPager.setOffscreenPageLimit(3);
 
         ArrayList<Item> list = new ArrayList<Item>();
-        list.addAll(Arrays.asList(new Item(1, Color.BLUE), new Item(2, Color.RED), new Item(3, Color.YELLOW), new Item(4, Color.GREEN), new Item(5, Color.CYAN)));
+        list.addAll(Arrays.asList(new Item(1, Color.BLUE), new Item(2, Color.RED), new Item(3, Color.YELLOW), new Item(4, Color.GREEN), new Item(5, Color
+                .CYAN), new Item(6, Color.BLACK), new Item(7, Color.DKGRAY), new Item(8, Color.LTGRAY), new Item(9, 747474)));
         mAdapter.setData(list);
 
         mButton = (Button) findViewById(R.id.button);
@@ -49,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //replaceFragment(Color.CYAN, mPager.getCurrentItem());
 
-                //mPager.replaceAndAddAfter(1, new Item(5, Color.DKGRAY), new Item(6, Color.LTGRAY));
+                mPager.replaceAndAddAfter(1, new Item(count++, Color.DKGRAY), new Item(count++, Color.LTGRAY));
                 //removeFragment(mPager.getCurrentItem());
-                mPager.replaceAndDeleteBefore(3, 2, 2, new Item(count, Color.DKGRAY));
+                //mPager.replaceAndDeleteBefore(mPager.getCurrentItem(), 2, 2, new Item(count, Color.DKGRAY));
                 count++;
             }
         });

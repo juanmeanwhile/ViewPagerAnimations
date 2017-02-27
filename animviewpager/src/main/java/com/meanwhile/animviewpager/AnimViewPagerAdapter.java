@@ -17,9 +17,9 @@ import java.util.List;
  * Created by mengujua on 10/2/17.
  */
 
-public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapter {
+public abstract class AnimViewPagerAdapter<T, K> extends FragmentStatePagerAdapter {
 
-    private HashMap<T, I> mIdMap;
+    private HashMap<T, K> mIdMap;
     private SparseArray<WeakReference<Fragment>> registeredFragments;
     private List<T> mData;
 
@@ -27,11 +27,11 @@ public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapte
         super(fm);
 
         mData = new ArrayList<T>();
-        mIdMap = new HashMap<T, I>();
+        mIdMap = new HashMap<T, K>();
         registeredFragments = new SparseArray<WeakReference<Fragment>>();
     }
 
-    public abstract I getIdForObject(T item);
+    public abstract K getIdForObject(T item);
 
     protected abstract Fragment getFragmentForItem(T t);
 
@@ -45,6 +45,10 @@ public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapte
         notifyDataSetChanged();
     }
 
+    public ArrayList<T> getData(){
+        return new ArrayList<T>(mIdMap.keySet());
+    }
+
     public void delete(int fromInc, int toExc) {
         for (int i = 0;  i < fromInc - toExc ; i++) {
             T item = mData.remove(fromInc);
@@ -54,7 +58,7 @@ public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapte
     }
 
     public void replaceAndDeleteBefore(int deleteFromPos, int replacePos, T replacingItem) {
-        for (int i = 0;  i < replacePos - deleteFromPos ; i++) {
+        for (int i = 0;  i <= replacePos - deleteFromPos ; i++) {
            T item = mData.remove(deleteFromPos);
             mIdMap.remove(item);
         }
@@ -82,13 +86,17 @@ public abstract class AnimViewPagerAdapter<T,I> extends FragmentStatePagerAdapte
         notifyDataSetChanged();
     }
 
-    public I getItemId(int position){
+    public K getItemId(int position){
         return mIdMap.get(mData.get(position));
     }
 
 
     public Fragment getRegisteredFragment(int position) {
-        return registeredFragments.get(position).get();
+        WeakReference<Fragment> weakRef =  registeredFragments.get(position);
+        if (weakRef != null) {
+            return weakRef.get();
+        }
+        return null;
     }
 
     @Override
