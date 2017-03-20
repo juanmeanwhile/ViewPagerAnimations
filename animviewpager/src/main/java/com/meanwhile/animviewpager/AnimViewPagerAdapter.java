@@ -68,12 +68,13 @@ public abstract class AnimViewPagerAdapter<T, K> extends FragmentStatePagerAdapt
         notifyDataSetChanged();
     }
 
-    public void replaceAndAddAfter(int position, T... items) {
-        T removed = mData.remove(position);
-        mData.addAll(position, Arrays.asList(items));
+    public void addItems(int position, boolean replace, T... items) {
+        if (replace) {
+            T removed = mData.remove(position);
+            mIdMap.remove(removed);
+        }
 
-        //Now its id is its val
-        mIdMap.remove(removed);
+        mData.addAll(position, Arrays.asList(items));
         for (T item : items) {
             mIdMap.put(item, getIdForObject(item));
         }

@@ -82,6 +82,14 @@ public class AnimViewPager<T, K> extends ViewPager {
         set.start();
     }
 
+    public void addAfter(final int position, final T...items) {
+        final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
+        final HashMap<K, Integer> leftValueMap = getInitialPositionMap(firstPos);
+
+        ((AnimViewPagerAdapter) getAdapter()).addItems(position+1, false, items);
+        setupSecondStepAnimations(firstPos +1, leftValueMap);
+    }
+
     public void replaceAndAddAfter(final int position, final T...items) {
         Animator removeAnim;
         Fragment fr = ((AnimViewPagerAdapter) getAdapter()).getRegisteredFragment(position);
@@ -99,7 +107,7 @@ public class AnimViewPager<T, K> extends ViewPager {
                     final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
                     final HashMap<K, Integer> leftValueMap = getInitialPositionMap(firstPos);
 
-                    ((AnimViewPagerAdapter) getAdapter()).replaceAndAddAfter(position, items);
+                    ((AnimViewPagerAdapter) getAdapter()).addItems(position, true, items);
                     setupSecondStepAnimations(firstPos, leftValueMap);
                 }
 
@@ -119,7 +127,7 @@ public class AnimViewPager<T, K> extends ViewPager {
             final int firstPos = Math.max(0, getCurrentItem() - getOffscreenPageLimit());
             final HashMap<K, Integer> leftValueMap = getInitialPositionMap(firstPos);
 
-            ((AnimViewPagerAdapter) getAdapter()).replaceAndAddAfter(position, items);
+            ((AnimViewPagerAdapter) getAdapter()).addItems(position, true, items);
             setupSecondStepAnimations(firstPos, leftValueMap);
         }
     }

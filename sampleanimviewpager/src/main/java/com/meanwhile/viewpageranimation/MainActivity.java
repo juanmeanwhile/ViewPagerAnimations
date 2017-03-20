@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //replaceFragment(Color.CYAN, mPager.getCurrentItem());
 
-                mPager.replaceAndAddAfter(1, new Item(count++, Color.DKGRAY), new Item(count++, Color.LTGRAY));
+                //mPager.replaceAndAddAfter(1,  new Item(count++, Color.DKGRAY), new Item(count++, Color.LTGRAY));
+                mPager.addAfter(1,  new Item(count++, Color.DKGRAY), new Item(count++, Color.LTGRAY));
                 //removeFragment(mPager.getCurrentItem());
                 //mPager.replaceAndDeleteBefore(mPager.getCurrentItem(), 2, 2, new Item(count, Color.DKGRAY));
                 count++;
